@@ -1,30 +1,27 @@
-# User Tagging
+## User and People Tagging
+This repository aims to develop and improve people and tagging features in Talawa. This idea have been built on the currently existing features and development of Talawa-API respository. *This is just an prototypee development of the idea to test for real case scenarios. More debugging and changes need to be introduced*
 
-GraphQL API Server using Node and GraphQL that helps in managing teams
-
-_Author:_ Ibiyemi Sanni
+Here we have developed GraphQL API Server using Node and GraphQL that helps in managing organization's people with tags
 
 ## Features and Requirements
 
-A member has a firstName, lastName enail and a type (that can an employee or a contractor) - if it's a contractor, the duration of the contract needs to be saved, and if it's an employee their role is stored, for instance: Software Engineer, Project Manager and so on. A member can be tagged, for instance: C#, Angular, General Frontend, Seasoned Leader and so on. (Tags will likely be used as filters later, so keep that in mind)
-
-The application is further extended to allow have admin users and regular users. And admin users can only be employees not contractors.
+A user model as alredy in Talawa  has a firstName, lastName email and a type (that can an USER or a ADMIN). A organization member can be tagged, for instance: Women Ministry, Child Ministry, and so on. (Tags will likely be used as filters later, so we have to keep that in mind)
 
 ### Features overview
 
-- CREATE - READ - UPDATE - DELETE for Users
-- CREATE - READ - UPDATE - DELETE for Admin User
+- CREATE - READ - UPDATE - DELETE for Users (Already developed)
+- CREATE - READ - UPDATE - DELETE for Admin User (Already developed)
 - CREATE - READ - UPDATE - DELETE for Tags
 
 ### Other unique features of the application
 
 - Only admin users can create, edit and delete tags.
 
-- Admin users need to be verified to be active. verification code(CODELITT)
-
 - Users can fetch all tags and select from the tags during sign up or when editing user accounts
 
 - Tags are hard-deleted - They are removed from the database permanently
+
+#### Below things already build in talawa admin, just built the application also
 
 - Users are soft-deleted - They are only marked with a deleted flag but not permanently removed from the database
 
@@ -38,77 +35,6 @@ The application is further extended to allow have admin users and regular users.
 - Express
 - GraphQL
 - MongoDB
-- Docker
-
-## Requirements
-
-- NodeJS (minimum v14.0.0)
-
-## Installation
-
-### Node.JS
-
-Ensure you have node installed on your system, visit [node.org](https://nodejs.org/en/download/) to install. Once installed, open a terminal and run the command to confirm node is installed and see the current version
-
-```bash
-node -v
-```
-
-## Project Structure
-
-The code base is structured in a modular way, following a Model - Controller - Service Architecture. An overview of the code base:
-
-- CONFIG - containing configuration data for the application
-- CONTROLLER - contains the files that receives data from the graphql and call the services
-- CONSTANTS - contains data that are expected to br constant across the application.
-- MIDDLEWARES - collection of middlewares written for the application.
-- MODEL - contains the models for the database
-- SCHEMA - containing the queries, types and mutations for graphql server
-- SERVICES - containing services files that handles requests functionalities
-- TESTS - containing test files
-- UTILS - containing utility functions used in the application ( error handling, logging )
-- VALIDATIONS - contains validation rules for the requests.
-
-## Set - Up
-
-Clone the project from the github repository [https://github.com/ibiyemipedro/user-tagging.](https://github.com/ibiyemipedro/user-tagging)
-
-### Install Dependencies
-
-To install the dependencies of the project
-
-Navigate to the root folder of the project, open a terminal and run the following command
-
-```bash
-npm install
-
-```
-
-### Serve the project
-
-At this point, everything should be set and project ready to run.
-
-Run the following command
-
-```bash
-npm run start
-```
-
-### Tests
-
-Installing the dependences will install `jest`, `jest-extented` and `mongodb-memory-server`. Theses are the packages needed for the test.
-
-In the terminal of your root project, Run the following command
-
-```bash
-npm run test
-```
-
-## END-POINT
-
-If everything runs fine, navigate to your browser and open http://localhost:5000. The project will be running on the endpoint.
-
-_GraphQL Endpoint :_ ` http://localhost:5000/graphql`
 
 ## QUERIES
 
@@ -124,6 +50,7 @@ _Payload_
     _id
     name
     details
+    organization_id
   }
 }
 ```
@@ -136,13 +63,16 @@ _Response format_
     "tags": [
       {
         "_id": "6045c93db0f82343431e4332",
-        "name": "JS",
-        "details": "Tag for javascript developers"
+        "name": "Women Ministry",
+        "details": "tag for development of women",
+        organization_id: "63e14fafb25a241f2cb4ebed"
       }
     ]
   }
 }
 ```
+Saved in database as - <br>
+<img src="https://user-images.githubusercontent.com/65107474/228870509-e762c9f9-c3ed-4569-bd30-2b9b91aca7e4.png" width="500" />
 
 ### tag -
 
@@ -155,7 +85,8 @@ _Payload_
   tag(tagId: "6045c93db0f82343431e4332"){
     _id
     name
-    details
+    details,
+    organization_id
   }
 }
 ```
@@ -167,63 +98,10 @@ _Response format_
   "data": {
     "tag": {
       "_id": "6045c93db0f82343431e4332",
-      "name": "JS",
-      "details": "Tag for javascript developers"
+      "name": "Women Ministry",
+      "details": "tag for development of women"
     }
   }
-}
-```
-
-### users -
-
-- Gets all the users in the database
-
-_Header :_ `x-auth-toke : {token}`
-
-_Payload_
-
-```bash
-{
-  users{
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "users": [
-            {
-                "firstName": "Demo",
-                "lastName": "User",
-                "email": "b@b.com",
-                "role": "Software Dev",
-                "duration": null,
-                "userType": "employee",
-                "tags": []
-            },
-            {
-                "firstName": "Demo",
-                "lastName": "Admin",
-                "email": "a@a.com",
-                "role": "Software Dev",
-                "duration": null,
-                "userType": "employee",
-                "tags": []
-            }
-        ]
-    }
 }
 ```
 
@@ -239,7 +117,6 @@ _Payload_
     firstName
     lastName
     email
-    role
     duration
     userType
     tags{
@@ -258,57 +135,15 @@ _Response format_
             "firstName": "Demo",
             "lastName": "Admin",
             "email": "a@a.com",
-            "role": "Software Dev",
             "duration": null,
             "userType": "employee",
-            "tags": []
+            "tags": [tagID]
         }
     }
 }
 ```
 
 ## MUTATIONS
-
-### signUp -
-
-- creates a user account
-
-_Payload_
-
-```bash
-mutation{
-  signUp( firstName : "Demo" lastName : "User" role: "Software Dev" email: "b@b.com" userType: "employee" password: "1234567"){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "signUp": {
-      "firstName": "Demo",
-      "lastName": "User",
-      "email": "b@b.com",
-      "role": "Software Dev",
-      "duration": null,
-      "userType": "employee",
-      "tags": []
-    }
-  }
-}
-```
 
 ### adminSignUp -
 
@@ -318,11 +153,10 @@ _Payload_
 
 ```bash
 mutation{
-  adminSignUp( firstName : "Demo" lastName : "Admin" role: "Software Dev" email: "a@a.com" userType: "employee" password: "1234567"){
+  adminSignUp( firstName : "Demo" lastName : "Admin" email: "a@a.com" userType: "employee" password: "1234567"){
     firstName
     lastName
     email
-    role
     duration
     userType
     tags{
@@ -341,53 +175,11 @@ _Response format_
       "firstName": "Demo",
       "lastName": "Admin",
       "email": "a@a.com",
-      "role": "Software Dev",
       "duration": null,
       "tags": []
     }
   }
 }
-```
-
-### verifyAdmin -
-
-- Verifies an admin account
-
-_Payload_
-
-```bash
-mutation{
-  verifyAdmin(email: "a@a.com" verificationCode: "CODELITT"){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "verifyAdmin": {
-      "firstName": "Demo",
-      "lastName": "Admin",
-      "email": "a@a.com",
-      "role": "Software Dev",
-      "duration": null,
-      "userType": "employee",
-      "tags": []
-    }
-  }
-}
-
 ```
 
 ### addTag -
@@ -398,7 +190,7 @@ _Payload_
 
 ```bash
 mutation{
-  addTag(name: "JS" details: "Tag for tavascript developers"){
+  addTag(name: "Women Ministry" details: "tag for development of women"){
     name
     details
   }
@@ -411,8 +203,8 @@ _Response format_
 {
     "data": {
         "addTag": {
-            "name": "JS",
-            "details": "Tag for tavascript developers"
+            "name": "Women Ministry",
+            "details": "tag for development of women"
         }
     }
 }
@@ -426,7 +218,7 @@ _Payload_
 
 ```bash
 mutation{
-  editTag(id: "6045c93db0f82343431e4332" name: "JS" details: "Tag for javascript developers"){
+  editTag(id: "6045c93db0f82343431e4332" name: "Women Ministry" details: "tag for development of women"){
     name
     details
   }
@@ -439,8 +231,8 @@ _Response format_
 {
     "data": {
         "editTag": {
-            "name": "JS",
-            "details": "Tag for javascript developers"
+            "name": "Women Ministry",
+            "details": "tag for development of women"
         }
     }
 }
@@ -474,77 +266,76 @@ _Response format_
 }
 ```
 
-### editUser -
+## Requirements
 
-- Gets all the tags in the database
+- NodeJS (minimum v14.0.0)
 
-_Payload_
+## Installation
 
-```bash
-mutation{
-  editUser(firstName: "Philli" lastName:"Layden" tags: ["6045c93db0f82343431e4332"]){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
+### Node.JS
 
-_Response format_
+Ensure you have node installed on your system, visit [node.org](https://nodejs.org/en/download/) to install. Once installed, open a terminal and run the command to confirm node is installed and see the current version
 
 ```bash
-{
-    "data": {
-        "editUser": {
-            "firstName": "Philli",
-            "lastName": "Layden",
-            "email": "a@a.com",
-            "role": "Software Dev",
-            "duration": null,
-            "userType": "employee",
-            "tags": [
-                {
-                    "name": "JS"
-                }
-            ]
-        }
-    }
-}
+node -v
 ```
 
-### deleteUser -
+## Project Structure
 
-- Gets all the tags in the database
+The code base is structured in a modular way, following a Model - Controller - Service Architecture. An overview of the code base:
 
-_Payload_
+- CONFIG - containing configuration data for the application
+- CONTROLLER - contains the files that receives data from the graphql and call the services
+- CONSTANTS - contains data that are expected to br constant across the application.
+- MIDDLEWARES - collection of middlewares written for the application.
+- MODEL - contains the models for the database
+- SCHEMA - containing the queries, types and mutations for graphql server
+- SERVICES - containing services files that handles requests functionalities
+- TESTS - containing test files
+- UTILS - containing utility functions used in the application ( error handling, logging )
+- VALIDATIONS - contains validation rules for the requests.
+
+## Set - Up
+
+Clone the project from the github repository [https://github.com/KrutikaBhatt/people_tagging_feature](https://github.com/KrutikaBhatt/people_tagging_feature)
+
+### Install Dependencies
+
+To install the dependencies of the project
+
+Navigate to the root folder of the project, open a terminal and run the following command
 
 ```bash
-mutation{
-  deleteUser(userId:"6045cd7810ba6e453bdfcf98"){
-    code
-    message
-  }
-}
+npm install
+
 ```
 
-_Response format_
+### Serve the project
+
+At this point, everything should be set and project ready to run.
+
+Run the following command
 
 ```bash
-{
-    "data": {
-        "deleteUser": {
-            "code": 200,
-            "message": "Resource Deleted Successfully"
-        }
-    }
-}
+npm run start
 ```
+
+### Tests
+
+Installing the dependences will install `jest` and `jest-extented`. Theses are the packages needed for the test. For this project, I have just added tests for Tag controllers and mutations
+
+In the terminal of your root project, Run the following command
+
+```bash
+npm run test
+```
+
+## END-POINT
+
+If everything runs fine, navigate to your browser and open http://localhost:5000. The project will be running on the endpoint.
+
+_GraphQL Endpoint :_ ` http://localhost:5000/graphql`
+
 
 ## IMPROVEMENTS
 
