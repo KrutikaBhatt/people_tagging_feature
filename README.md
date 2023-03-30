@@ -1,8 +1,7 @@
-# User Tagging
+# User and People Tagging
+This repository aims to develop and improve people and tagging features in Talawa. This idea have been built on the currently existing features and development of Talawa-API respository. *This is just an prototypee development of the idea to test for real case scenarios. More debugging and changes need to be introduced*
 
-GraphQL API Server using Node and GraphQL that helps in managing teams
-
-_Author:_ Ibiyemi Sanni
+Here we have developed GraphQL API Server using Node and GraphQL that helps in managing organization's people with tags
 
 ## Features and Requirements
 
@@ -38,7 +37,6 @@ The application is further extended to allow have admin users and regular users.
 - Express
 - GraphQL
 - MongoDB
-- Docker
 
 ## Requirements
 
@@ -71,7 +69,7 @@ The code base is structured in a modular way, following a Model - Controller - S
 
 ## Set - Up
 
-Clone the project from the github repository [https://github.com/ibiyemipedro/user-tagging.](https://github.com/ibiyemipedro/user-tagging)
+Clone the project from the github repository [https://github.com/KrutikaBhatt/people_tagging_feature](https://github.com/KrutikaBhatt/people_tagging_feature)
 
 ### Install Dependencies
 
@@ -96,7 +94,7 @@ npm run start
 
 ### Tests
 
-Installing the dependences will install `jest`, `jest-extented` and `mongodb-memory-server`. Theses are the packages needed for the test.
+Installing the dependences will install `jest` and `jest-extented`. Theses are the packages needed for the test. For this project, I have just added tests for Tag controllers and mutations
 
 In the terminal of your root project, Run the following command
 
