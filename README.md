@@ -344,5 +344,3 @@ For improvements to the to make the application better
 - More test cases are needed to cover success and failure cases
 - Custom error handler function for graphql for improved error handling
 - additional response types to better structure graphql responses with status and message alongside the data
-
-### -------------------------------Side note--------------------------------------------------
