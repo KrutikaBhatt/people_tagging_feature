@@ -1,29 +1,27 @@
-# User and People Tagging
+## User and People Tagging
 This repository aims to develop and improve people and tagging features in Talawa. This idea have been built on the currently existing features and development of Talawa-API respository. *This is just an prototypee development of the idea to test for real case scenarios. More debugging and changes need to be introduced*
 
 Here we have developed GraphQL API Server using Node and GraphQL that helps in managing organization's people with tags
 
 ## Features and Requirements
 
-A member has a firstName, lastName enail and a type (that can an employee or a contractor) - if it's a contractor, the duration of the contract needs to be saved, and if it's an employee their role is stored, for instance: Software Engineer, Project Manager and so on. A member can be tagged, for instance: C#, Angular, General Frontend, Seasoned Leader and so on. (Tags will likely be used as filters later, so keep that in mind)
-
-The application is further extended to allow have admin users and regular users. And admin users can only be employees not contractors.
+A user model as alredy in Talawa  has a firstName, lastName email and a type (that can an USER or a ADMIN). A organization member can be tagged, for instance: Women Ministry, Child Ministry, and so on. (Tags will likely be used as filters later, so we have to keep that in mind)
 
 ### Features overview
 
-- CREATE - READ - UPDATE - DELETE for Users
-- CREATE - READ - UPDATE - DELETE for Admin User
+- CREATE - READ - UPDATE - DELETE for Users (Already developed)
+- CREATE - READ - UPDATE - DELETE for Admin User (Already developed)
 - CREATE - READ - UPDATE - DELETE for Tags
 
 ### Other unique features of the application
 
 - Only admin users can create, edit and delete tags.
 
-- Admin users need to be verified to be active. verification code(CODELITT)
-
 - Users can fetch all tags and select from the tags during sign up or when editing user accounts
 
 - Tags are hard-deleted - They are removed from the database permanently
+
+#### Below things already build in talawa admin, just built the application also
 
 - Users are soft-deleted - They are only marked with a deleted flag but not permanently removed from the database
 
@@ -37,6 +35,236 @@ The application is further extended to allow have admin users and regular users.
 - Express
 - GraphQL
 - MongoDB
+
+## QUERIES
+
+### tags -
+
+- Gets all the tags in the database
+
+_Payload_
+
+```bash
+{
+  tags{
+    _id
+    name
+    details
+    organization_id
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+  "data": {
+    "tags": [
+      {
+        "_id": "6045c93db0f82343431e4332",
+        "name": "Women Ministry",
+        "details": "tag for development of women",
+        organization_id: "63e14fafb25a241f2cb4ebed"
+      }
+    ]
+  }
+}
+```
+Saved in database as - <br>
+<img src="https://user-images.githubusercontent.com/65107474/228870509-e762c9f9-c3ed-4569-bd30-2b9b91aca7e4.png" width="500" />
+
+### tag -
+
+- Get details of a single tag
+
+_Payload_
+
+```bash
+{
+  tag(tagId: "6045c93db0f82343431e4332"){
+    _id
+    name
+    details,
+    organization_id
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+  "data": {
+    "tag": {
+      "_id": "6045c93db0f82343431e4332",
+      "name": "Women Ministry",
+      "details": "tag for development of women"
+    }
+  }
+}
+```
+
+### user -
+
+- Get details of a single user
+
+_Payload_
+
+```bash
+{
+  user{
+    firstName
+    lastName
+    email
+    duration
+    userType
+    tags{
+      name
+    }
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+    "data": {
+        "user": {
+            "firstName": "Demo",
+            "lastName": "Admin",
+            "email": "a@a.com",
+            "duration": null,
+            "userType": "employee",
+            "tags": [tagID]
+        }
+    }
+}
+```
+
+## MUTATIONS
+
+### adminSignUp -
+
+- Creates a user with admin access
+
+_Payload_
+
+```bash
+mutation{
+  adminSignUp( firstName : "Demo" lastName : "Admin" email: "a@a.com" userType: "employee" password: "1234567"){
+    firstName
+    lastName
+    email
+    duration
+    userType
+    tags{
+      name
+    }
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+  "data": {
+    "adminSignUp": {
+      "firstName": "Demo",
+      "lastName": "Admin",
+      "email": "a@a.com",
+      "duration": null,
+      "tags": []
+    }
+  }
+}
+```
+
+### addTag -
+
+- adds a tag to the db
+
+_Payload_
+
+```bash
+mutation{
+  addTag(name: "Women Ministry" details: "tag for development of women"){
+    name
+    details
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+    "data": {
+        "addTag": {
+            "name": "Women Ministry",
+            "details": "tag for development of women"
+        }
+    }
+}
+```
+
+### editTag -
+
+- Edit tag information
+
+_Payload_
+
+```bash
+mutation{
+  editTag(id: "6045c93db0f82343431e4332" name: "Women Ministry" details: "tag for development of women"){
+    name
+    details
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+    "data": {
+        "editTag": {
+            "name": "Women Ministry",
+            "details": "tag for development of women"
+        }
+    }
+}
+```
+
+### deleteTag -
+
+- Removes a tag from the database
+
+_Payload_
+
+```bash
+mutation{
+  deleteTag(tagId: "6045cb783212fb44caf3f21f"){
+    code
+    message
+  }
+}
+```
+
+_Response format_
+
+```bash
+{
+    "data": {
+        "deleteTag": {
+            "code": 200,
+            "message": "Resource Deleted Successfully"
+        }
+    }
+}
+```
 
 ## Requirements
 
@@ -108,441 +336,6 @@ If everything runs fine, navigate to your browser and open http://localhost:5000
 
 _GraphQL Endpoint :_ ` http://localhost:5000/graphql`
 
-## QUERIES
-
-### tags -
-
-- Gets all the tags in the database
-
-_Payload_
-
-```bash
-{
-  tags{
-    _id
-    name
-    details
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "tags": [
-      {
-        "_id": "6045c93db0f82343431e4332",
-        "name": "JS",
-        "details": "Tag for javascript developers"
-      }
-    ]
-  }
-}
-```
-
-### tag -
-
-- Get details of a single tag
-
-_Payload_
-
-```bash
-{
-  tag(tagId: "6045c93db0f82343431e4332"){
-    _id
-    name
-    details
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "tag": {
-      "_id": "6045c93db0f82343431e4332",
-      "name": "JS",
-      "details": "Tag for javascript developers"
-    }
-  }
-}
-```
-
-### users -
-
-- Gets all the users in the database
-
-_Header :_ `x-auth-toke : {token}`
-
-_Payload_
-
-```bash
-{
-  users{
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "users": [
-            {
-                "firstName": "Demo",
-                "lastName": "User",
-                "email": "b@b.com",
-                "role": "Software Dev",
-                "duration": null,
-                "userType": "employee",
-                "tags": []
-            },
-            {
-                "firstName": "Demo",
-                "lastName": "Admin",
-                "email": "a@a.com",
-                "role": "Software Dev",
-                "duration": null,
-                "userType": "employee",
-                "tags": []
-            }
-        ]
-    }
-}
-```
-
-### user -
-
-- Get details of a single user
-
-_Payload_
-
-```bash
-{
-  user{
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "user": {
-            "firstName": "Demo",
-            "lastName": "Admin",
-            "email": "a@a.com",
-            "role": "Software Dev",
-            "duration": null,
-            "userType": "employee",
-            "tags": []
-        }
-    }
-}
-```
-
-## MUTATIONS
-
-### signUp -
-
-- creates a user account
-
-_Payload_
-
-```bash
-mutation{
-  signUp( firstName : "Demo" lastName : "User" role: "Software Dev" email: "b@b.com" userType: "employee" password: "1234567"){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "signUp": {
-      "firstName": "Demo",
-      "lastName": "User",
-      "email": "b@b.com",
-      "role": "Software Dev",
-      "duration": null,
-      "userType": "employee",
-      "tags": []
-    }
-  }
-}
-```
-
-### adminSignUp -
-
-- Creates a user with admin access
-
-_Payload_
-
-```bash
-mutation{
-  adminSignUp( firstName : "Demo" lastName : "Admin" role: "Software Dev" email: "a@a.com" userType: "employee" password: "1234567"){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "adminSignUp": {
-      "firstName": "Demo",
-      "lastName": "Admin",
-      "email": "a@a.com",
-      "role": "Software Dev",
-      "duration": null,
-      "tags": []
-    }
-  }
-}
-```
-
-### verifyAdmin -
-
-- Verifies an admin account
-
-_Payload_
-
-```bash
-mutation{
-  verifyAdmin(email: "a@a.com" verificationCode: "CODELITT"){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-  "data": {
-    "verifyAdmin": {
-      "firstName": "Demo",
-      "lastName": "Admin",
-      "email": "a@a.com",
-      "role": "Software Dev",
-      "duration": null,
-      "userType": "employee",
-      "tags": []
-    }
-  }
-}
-
-```
-
-### addTag -
-
-- adds a tag to the db
-
-_Payload_
-
-```bash
-mutation{
-  addTag(name: "JS" details: "Tag for tavascript developers"){
-    name
-    details
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "addTag": {
-            "name": "JS",
-            "details": "Tag for tavascript developers"
-        }
-    }
-}
-```
-
-### editTag -
-
-- Edit tag information
-
-_Payload_
-
-```bash
-mutation{
-  editTag(id: "6045c93db0f82343431e4332" name: "JS" details: "Tag for javascript developers"){
-    name
-    details
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "editTag": {
-            "name": "JS",
-            "details": "Tag for javascript developers"
-        }
-    }
-}
-```
-
-### deleteTag -
-
-- Removes a tag from the database
-
-_Payload_
-
-```bash
-mutation{
-  deleteTag(tagId: "6045cb783212fb44caf3f21f"){
-    code
-    message
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "deleteTag": {
-            "code": 200,
-            "message": "Resource Deleted Successfully"
-        }
-    }
-}
-```
-
-### editUser -
-
-- Gets all the tags in the database
-
-_Payload_
-
-```bash
-mutation{
-  editUser(firstName: "Philli" lastName:"Layden" tags: ["6045c93db0f82343431e4332"]){
-    firstName
-    lastName
-    email
-    role
-    duration
-    userType
-    tags{
-      name
-    }
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "editUser": {
-            "firstName": "Philli",
-            "lastName": "Layden",
-            "email": "a@a.com",
-            "role": "Software Dev",
-            "duration": null,
-            "userType": "employee",
-            "tags": [
-                {
-                    "name": "JS"
-                }
-            ]
-        }
-    }
-}
-```
-
-### deleteUser -
-
-- Gets all the tags in the database
-
-_Payload_
-
-```bash
-mutation{
-  deleteUser(userId:"6045cd7810ba6e453bdfcf98"){
-    code
-    message
-  }
-}
-```
-
-_Response format_
-
-```bash
-{
-    "data": {
-        "deleteUser": {
-            "code": 200,
-            "message": "Resource Deleted Successfully"
-        }
-    }
-}
-```
 
 ## IMPROVEMENTS
 
